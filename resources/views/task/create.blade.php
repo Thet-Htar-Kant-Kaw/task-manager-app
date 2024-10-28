@@ -17,48 +17,51 @@
                         </h4>
                     </div>
                     <div class="card-body">
-                        <form action="{{ url('tasks') }}" method="POST">
+                        <form id="task_form" action="{{ url('tasks') }}" method="POST"> 
                             @csrf
                             @method('POST')
-
+                        
                             <div class="mb-3">
-                                <label>Title</label>
-                                <input type="text" name="title" class="form-control" value="{{ old('title') }}" />
-                                @error('title') <span class="text-danger">{{ $message }}</span>  @enderror
+                                <label for="title">Title</label>
+                                <input type="text" id="title" name="title" class="form-control" value="{{ old('title') }}" />
+                                {{-- @error('title') <span class="text-danger">{{ $message }}</span> @enderror --}}
                             </div>
-
+                        
                             <div class="dropdown mb-3">
-                                <label for="exampleFormControlSelect1">Select Category</label>
-                                <select name="category_id" class="form-control mt-1" id="exampleFormControlSelect1">
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
-                                    <option value="4">4</option>
-                                    <option value="5">5</option>
+                                <label for="category_id">Select Category</label>
+                                <select name="category_id" class="form-control mt-1" id="category_id">
+                                    <option value="">--Select Category--</option>
+                                    @foreach($categories as $category)
+                                        <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                    @endforeach
                                 </select>
                             </div>
-
+                        
                             <div class="mb-3">
-                                <label>Description</label>
-                                <textarea name="description" class="form-control" rows="3">{{ old('description') }}</textarea>
-                                @error('description') <span class="text-danger">{{ $message }}</span>  @enderror
+                                <label for="description">Description</label>
+                                <textarea id="description" name="description" class="form-control" rows="3">{{ old('description') }}</textarea>
+                                {{-- @error('description') <span class="text-danger">{{ $message }}</span> @enderror --}}
                             </div>
-
+                        
                             <div class="mb-3">
-                                <label for="due_date" class="form-label">Due Date</label>
-                                <input type="date" name="due_date" class="form-control" id="due_date" required>
+                                <label for="due_date">Due Date</label>
+                                <input type="date" id="due_date" name="due_date" value="{{ old('due_date') }}" class="form-control">
                             </div>
-
+                        
                             <div class="mb-3">
                                 <button type="submit" class="btn btn-primary">Save</button> 
-                                {{-- form action once this is clicked --}}
                             </div>
-                        </form>
+                        </form>                        
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <script src="{{ asset('js/jquery-3.7.1.js') }}"></script>
+    <script src="{{ asset('js/jquery.validate.min.js') }}"></script>
+    <!-- Link to the custom validation file -->
+    <script src="{{ asset('js/createTask.js') }}"></script>
 
 </x-app-web-layout>
 

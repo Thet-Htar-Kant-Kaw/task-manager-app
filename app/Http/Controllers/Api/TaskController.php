@@ -6,6 +6,8 @@ use App\Models\Task;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\TaskResource;
+use App\Models\Category;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class TaskController extends Controller
@@ -13,6 +15,10 @@ class TaskController extends Controller
     public function index()
     {
         $tasks = Task::get();
+
+        // dd(
+        //     Auth::user()
+        // );
 
         // if($tasks->count() > 0){
         //     return TaskResource::collection($tasks);
@@ -25,32 +31,33 @@ class TaskController extends Controller
 
     public function create()
     {
-        return view('task.create');
+        $categories = Category::all();
+        return view('task.create', compact('categories'));
     }
 
     public function store(Request $request)
     {
-        // $request->validate([
+        $request->validate([
+            'title' => 'required|max:255|string',
+            'description' => 'required|max:255|string',
+            'category_id' => 'required',
+            'due_date' => 'required',
+        ]);
+        
+        // $validator = Validator::make($request->all(),[
         //     'title' => 'required|max:255|string',
         //     'description' => 'required|max:255|string',
         //     'category_id' => 'required',
         //     'due_date' => 'required',
         // ]);
 
-        $validator = Validator::make($request->all(),[
-            'title' => 'required|max:255|string',
-            'description' => 'required|max:255|string',
-            'category_id' => 'required',
-            'due_date' => 'required',
-        ]);
-
-        if($validator->fails())
-        {
-            return response()->json([
-                'message' => 'All fields are mandatory',
-                'error' => $validator->messages(),
-            ], 422);
-        }
+        // if($validator->fails())
+        // {
+        //     return response()->json([
+        //         'message' => 'All fields are mandatory',
+        //         'error' => $validator->messages(),
+        //     ], 422);
+        // }
 
         // Below is Task model
         $task = Task::create([
@@ -58,7 +65,10 @@ class TaskController extends Controller
             'description' => $request->description,
             'category_id' => $request->category_id,
             'due_date' => $request->due_date,
-            'user_id' => 1
+            // 'user_id' => 1
+            // 'user_id' => Auth::user()->id,
+            // 'user_id' => auth()->user()->id
+            'user_id' => Auth::id()
         ]);
 
         // return response()->json([
@@ -69,44 +79,48 @@ class TaskController extends Controller
         return redirect('tasks');
     }
 
-    public function edit(int $id)
+    public function edit(Task $task)
     {
-        $task = Task::findOrFail($id); //either show the data or show 404
-        return view('task.edit', compact('task'));  //pass the task variable as array
+        // $task = Task::findOrFail($id); //either show the data or show 404
+        $categories = Category::all();
+        // return view('task.create', compact('categories'));
+        // dd($categories);
+        return view('task.edit', compact('task', 'categories'));  //pass the task variable as array
     }
 
-    public function update(Request $request, int $id)
+    public function update(Request $request, Task $task)
     {
-        // $request->validate([
-        //     'title' => 'required|max:255|string',
-        //     'description' => 'required|max:255|string',
-        //     'category_id' => 'required',
-        //     'due_date' => 'required',
-        // ]);
-
-        $validator = Validator::make($request->all(),[
+        $request->validate([
             'title' => 'required|max:255|string',
             'description' => 'required|max:255|string',
             'category_id' => 'required',
+            'due_date' => 'required',
         ]);
 
-        if($validator->fails())
-        {
-            return response()->json([
-                'message' => 'All fields are mandatory',
-                'error' => $validator->messages(),
-            ], 422);
-        }
+        // $validator = Validator::make($request->all(),[
+        //     'title' => 'required|max:255|string',
+        //     'description' => 'required|max:255|string',
+        //     'category_id' => 'required',
+        //     'due_date' => 'required'
+        // ]);
+
+        // if($validator->fails())
+        // {
+        //     return response()->json([
+        //         'message' => 'All fields are mandatory',
+        //         'error' => $validator->messages(),
+        //     ], 422);
+        // }
 
         // Below is Task model
-        $task = Task::findOrFail($id)->update([
+        $task->update([
             'title' => $request->title,
             'description' => $request->description,
             'category_id' => $request->category_id,
             'due_date' => $request->due_date,
         ]);
 
-        $task = Task::findOrFail($id);
+        // $task = Task::findOrFail($id);
 
         // return response()->json([
         //     'message' => 'Product updated successfully',
@@ -116,9 +130,9 @@ class TaskController extends Controller
         return redirect('tasks');
     }
 
-    public function destroy(int $id)
+    public function destroy(Task $task)
     {
-        $task = Task::findOrFail($id);
+        // $task = Task::findOrFail($id);
         $task->delete();
 
         // return response()->json([

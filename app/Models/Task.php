@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Category;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Task extends Model
 {
@@ -12,14 +13,17 @@ class Task extends Model
     protected $table = 'tasks';
 
     // table column field names
-    // protected $guarded = [];
-    protected $fillable = [
-        'title',
-        'category_id',
-        'description',
-        'due_date',
-        'user_id'
-    ];
+    protected $guarded = [];
+    // protected $fillable = [
+    //     'title',
+    //     'description',
+    //     'due_date'
+    // ];
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
 }
 
-?>
+ 

@@ -14,9 +14,10 @@ return new class extends Migration
         Schema::create('tasks', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->integer('category_id');
-            $table->string('description');
-            $table->integer('user_id');
+            // $table->integer('category_id');
+            $table->foreignIdFor(\App\Models\Category::class);
+            $table->longText('description');
+            $table->foreignIdFor(\App\Models\User::class);
             $table->string('due_date')->nullable();
             $table->string('status')->nullable();
             $table->timestamps();
