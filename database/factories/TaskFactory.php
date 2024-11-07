@@ -23,7 +23,7 @@ class TaskFactory extends Factory
             'category_id' => Category::inRandomOrder()->first()->id,
             'description' => $this->faker->paragraph(2),
             'user_id' => User::inRandomOrder()->first()->id,
-            'due_date' => $this->faker->date(),
+            'due_date' => $this->faker->dateTimeThisYear(),
             'status' => null
         ];
     }
