@@ -12,9 +12,9 @@ use Illuminate\Support\Facades\Validator;
 
 class TaskController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $tasks = Task::get();
+        $tasks = Task::all();
 
         // dd(
         //     Auth::user()
@@ -88,7 +88,7 @@ class TaskController extends Controller
         return view('task.edit', compact('task', 'categories'));  //pass the task variable as array
     }
 
-    public function update(Request $request, Task $task)
+    public function update(Request $request, $id)
     {
         $request->validate([
             'title' => 'required|max:255|string',
@@ -112,6 +112,8 @@ class TaskController extends Controller
         //     ], 422);
         // }
 
+        $task = Task::findOrFail($id);
+
         // Below is Task model
         $task->update([
             'title' => $request->title,
@@ -119,8 +121,6 @@ class TaskController extends Controller
             'category_id' => $request->category_id,
             'due_date' => $request->due_date,
         ]);
-
-        // $task = Task::findOrFail($id);
 
         // return response()->json([
         //     'message' => 'Product updated successfully',
@@ -130,15 +130,27 @@ class TaskController extends Controller
         return redirect('tasks');
     }
 
-    public function destroy(Task $task)
+    public function destroy(Task $task, Request $request)
     {
-        // $task = Task::findOrFail($id);
-        $task->delete();
-
-        // return response()->json([
-        //     'message' => 'Product deleted successfully',
-        // ],200);
-
-        return redirect()->back()->with('status', 'Task deleted');
+        if($request->has('force')) {
+            $task->forceDelete();
+            return redirect()->back()->with('status', 'Task permanently deleted');
+        } else {
+            $task->delete();
+            return redirect()->back()->with('status', 'Task deleted');
+        }
     }
+
+    // public function destroy($id)
+    // {
+    //     $task = Task::findOrFail($id);
+    //     // dd($id);
+    //     $task->delete();
+
+    //     // return response()->json([
+    //     //     'message' => 'Product deleted successfully',
+    //     // ],200);
+
+    //     return redirect()->back()->with('status', 'Task deleted');
+    // }
 }

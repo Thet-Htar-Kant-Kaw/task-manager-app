@@ -20,6 +20,7 @@ return new class extends Migration
             $table->foreignIdFor(\App\Models\User::class);
             $table->string('due_date')->nullable();
             $table->string('status')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

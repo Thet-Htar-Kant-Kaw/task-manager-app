@@ -24,3 +24,9 @@ window.addEventListener('DOMContentLoaded', event => {
     }
 
 });
+
+
+// document.getElementById('task-filter').addEventListener('change', function() {
+//     const filter = this.value;
+//     window.location.href = `?filter={$filter}`;
+// });

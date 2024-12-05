@@ -27,6 +27,6 @@ class DatabaseSeeder extends Seeder
         User::factory()->count(5)->create();
 
         // Create 30 posts, each linked to a random user
-        Task::factory()->count(30)->create();
+        Task::factory()->count(10)->create();
     }
 }
